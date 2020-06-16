@@ -3,6 +3,8 @@
 include_once 'DBConnector.php';
 include_once 'user.php';
 
+
+
 $con = new DBConnector;
 if (isset ($_POST['btn-login'])){
 
@@ -17,7 +19,10 @@ if (isset ($_POST['btn-login'])){
 		$instance->login();
 		$con ->closeDatabase();
 		$instance->createUserSession();
-	}
+	}else{
+    $con->closeDatabase();
+    header("Location:login.php");
+}
 }
 
 ?>

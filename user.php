@@ -3,27 +3,31 @@
 include "Crud.php";
 include "authenticator.php";
 include_once 'DBConnector.php';
+
 class User implements Crud{
 	private $user_id;
 	private $first_name;
 	private $last_name;
 	private $city_name;
-
 	private $username;
 	private $password;
+	private $fileToUpload;
+	
 
-	function __construct($first_name = null,$last_name = null,$city_name = null,$username = null,$password = null) {
+	function __construct($first_name, $last_name, $city_name,$username,$password, $fileToUpload) {
 		$this->first_name = $first_name;
 		$this->last_name = $last_name;
 		$this->city_name = $city_name;
 		$this->username = $username;
 		$this->password = $password;
+		$this->fileToUpload=$fileToUpload;
+        
 
 	}
 
 	public static function create(){
-		$instance = new self();
-		return $instance;
+		 $instance = new self("","","","","","");
+      return $instance;
 	}
 
 	public function setUsername ($username){
@@ -51,20 +55,41 @@ class User implements Crud{
 		$this->user_id = $user_id;
 	}
 
-	public function getUserId($user_id){
+	public function getUserId(){
 		$this->user_id = $user_id;
 	}
+	public function setFileToUpload($fileToUpload)
+    {
+      $this->fileToUpload = $fileToUpload;
+    }
+ 
+    public function getFileToUpload()
+    {
+      return $this->fileToUpload;
+    }
+    public function setUtcTimestamp($utc_timestamp){
+      $this->utc_timestamp = $utc_timestamp;
+    }
+     public function getUtcTimestamp(){
+      $this->utc_timestamp = $utc_timestamp;
+    }
+     public function setTimezoneOffset($time_zone_offset){
+      $this->time_zone_offset = $offset;
+    }
+     public function getTimezoneOffset(){
+      $this->time_zone_offset = $offset;
+ }
 	public function openConnection(){
 		$conn = new DBConnector;
 		return $conn->__construct();
 	}
 	public function closeConnection(){
 		$conn = new DBConnector;
-		return $conn->closeDatabase();
+		return $conn->closeDatabase(); 
 	}
 	
 
-	public function save ()
+	public function save ()   
 	{
 		$fn = $this->first_name;
 		$ln = $this->last_name;
@@ -72,15 +97,19 @@ class User implements Crud{
 		$uname = $this->username;
 		$this->hashPassword();
 		$pass = $this->password;
+		$file=$this->fileToUpload;
 		$link= $this->openConnection();
-		$res = mysqli_query($link,"INSERT INTO person(first_name,last_name,user_city, username, password) VALUES('$fn','$ln','$city', '$uname', '$pass')") or die("Error: " .mysqli_error($link));
+		$res = mysqli_query($link,"INSERT INTO person(first_name,last_name,user_city, username, password, fileToUpload) VALUES('$fn','$ln','$city', '$uname', '$pass' ,'$file')") or die("Error: " .mysqli_error($link));
 		$this->closeConnection();
 		return $res;
 
 	}
-		public function readAll(){
-			
-			return null;
+		public function readAll(){ // If this function is deleted, this error (Class User contains 1 abstract method and must therefore be declared abstract or implement the remaining methods (Crud::readAll) in C:\xampp\htdocs\labs\user.php on line 6) occurs which means this abstract method need to be implemented first
+			$sql = "SELECT * FROM user";
+            $link = $this->openConnection();
+            $res = mysqli_query($link,$sql) or die ("Error: " .mysqli_error($link));
+            $this->closeConnection();
+            return $res;
 		}
 		public function readUnique(){
 			

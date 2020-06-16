@@ -1,6 +1,7 @@
 <?php 
 	include_once 'DBConnector.php';
 	include_once 'user.php';
+	include_once 'fileUploader.php';
 	$con = new DBConnector;
 	
 
@@ -10,21 +11,26 @@
 		$city = $_POST['city_name'];
 		$username = $_POST['username'];
 		$password = $_POST['password'];
+		$fileToUpload= $_POST['fileToUpload'];
+       
 
-		$user = new User($first_name, $last_name, $city, $username, $password);
-		if (!$user->validateForm()){
-			$user-> createFormErrorSessions();
-			header("Refresh:0");
-			die();
-		}
-		$res = $user->save();
-
-		if($res){
-			echo "Save operation was successful";
-		}else{
-			echo "An error has occured";
-		}
-	}
+		$user = new User($first_name, $last_name, $city, $username, $password, $fileToUpload);
+		$uploader = new FileUploader;
+		if(!$user->validateForm()){
+    	$user->createFormErrorSessions();
+    	header("Refresh:20");
+    	die();
+    }
+    $res = $user->save();
+    $file_upload_response=$uploader->uploadFile();
+ 
+    if ($res) {
+      echo "Save operation successful!";
+    } else {
+      echo "An error occurred!";
+    }
+    $con->closeDatabase();
+  }
 	
  ?>
 
@@ -33,6 +39,8 @@
 		<title>Labs</title>
 		<script type = "text/javascript" src = "validate.js"></script>
 		<link rel = "stylesheet" type = " text/css" href = "validate.css">
+		
+		
 	</head>
 	<body>
 		<form method="post" name = "user_details" id= "user_details" onsubmit="return validateForm()" action = "<?=$_SERVER['PHP_SELF']?>">
@@ -68,6 +76,9 @@
 					<td><input type="text" name= "password"  placeholder="Password"></td>
 				</tr>
 				<tr>
+				    <td>Profile image:<input type="file" name="fileToUpload" id="fileToUpload"></td>
+				</tr>
+				<tr>
 					<td><button type="submit" name= "btn_save"><strong>SAVE</strong></button></td>
 				</tr>
 				<tr>
@@ -76,4 +87,3 @@
 			</table>
 		</form>
 	</body>
-</html>
