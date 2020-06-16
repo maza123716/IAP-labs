@@ -12,9 +12,12 @@
 		$username = $_POST['username'];
 		$password = $_POST['password'];
 		$fileToUpload= $_POST['fileToUpload'];
+		$utc_timestamp = $_POST['utc_timestamp'];
+        $offset = $_POST['time_zone_offset'];
+
        
 
-		$user = new User($first_name, $last_name, $city, $username, $password, $fileToUpload);
+		$user = new User($first_name, $last_name, $city, $username, $password, $fileToUpload, $utc_timestamp, $offset);
 		$uploader = new FileUploader;
 		if(!$user->validateForm()){
     	$user->createFormErrorSessions();
@@ -39,7 +42,8 @@
 		<title>Labs</title>
 		<script type = "text/javascript" src = "validate.js"></script>
 		<link rel = "stylesheet" type = " text/css" href = "validate.css">
-		
+		<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"</script>
+		<script type ="text/javascript" src="timezone.js"></script>
 		
 	</head>
 	<body>
@@ -80,6 +84,12 @@
 				</tr>
 				<tr>
 					<td><button type="submit" name= "btn_save"><strong>SAVE</strong></button></td>
+				</tr>
+				<tr>
+					<td><input type="hidden" name= "utc_timestamp" id="utc_timestamp" value=""></td>
+				</tr>
+				<tr>
+					<td><input type="hidden" name="time_zone_offset" id ="time_zone_offset" value=""/></td>
 				</tr>
 				<tr>
 					<td><a href = "login.php">Login</a></td>

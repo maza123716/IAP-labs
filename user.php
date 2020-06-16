@@ -12,21 +12,24 @@ class User implements Crud{
 	private $username;
 	private $password;
 	private $fileToUpload;
+	private $utc_timestamp;
+    private $time_zone_offset;
 	
 
-	function __construct($first_name, $last_name, $city_name,$username,$password, $fileToUpload) {
+	function __construct($first_name, $last_name, $city_name,$username,$password, $fileToUpload, $utc_timestamp, $time_zone_offset) {
 		$this->first_name = $first_name;
 		$this->last_name = $last_name;
 		$this->city_name = $city_name;
 		$this->username = $username;
 		$this->password = $password;
 		$this->fileToUpload=$fileToUpload;
-        
+        $this->utc_timestamp =$utc_timestamp;
+        $this->time_zone_offset = $time_zone_offset;
 
 	}
 
 	public static function create(){
-		 $instance = new self("","","","","","");
+		 $instance = new self("","","","","","","","");
       return $instance;
 	}
 
@@ -97,9 +100,11 @@ class User implements Crud{
 		$uname = $this->username;
 		$this->hashPassword();
 		$pass = $this->password;
-		$file=$this->fileToUpload;
+		$fileToUpload=$this->fileToUpload;
+		$offset = $this->time_zone_offset;
+        $utc_timestamp =$this->utc_timestamp;
 		$link= $this->openConnection();
-		$res = mysqli_query($link,"INSERT INTO person(first_name,last_name,user_city, username, password, fileToUpload) VALUES('$fn','$ln','$city', '$uname', '$pass' ,'$file')") or die("Error: " .mysqli_error($link));
+		$res = mysqli_query($link,"INSERT INTO person(first_name,last_name,user_city, username, password, fileToUpload, utctimestamp, timezoneoffset) VALUES('$fn','$ln','$city', '$uname', '$pass' ,'$fileToUpload' ,'$utc_timestamp', '$offset')") or die("Error: " .mysqli_error($link));
 		$this->closeConnection();
 		return $res;
 
